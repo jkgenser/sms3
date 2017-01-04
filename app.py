@@ -4,6 +4,7 @@ from flask import Flask, request, url_for, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from twilio.rest import TwilioRestClient as Client
 from twilio import twiml
+from app_utils import datetime_east, cast_ans, get_child_options
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,54 +21,27 @@ client = Client(twilio_account_sid, twilio_auth_token)
 
 @app.route('/sms', methods=['GET', 'POST'])
 def controller():
-    from_number, ans = request.values['From']
+    from_num = request.values['From']
     ans = request.values['Body']
-    p = db.session.query(Participant).filter(Participant.phone_number == from_number).all()[0]
-    s_body = db.session.query(Survey).get(p.survey_id).body
-    categories = s_body['question'].keys()
+    p = db.session.query(Participant).filter(Participant.phone_number == from_num).all()[0]
+    s = db.session.query(Survey).get(p.survey_id).body
 
-    # Redirect down a level if last answer was a root node name
-    if ans.upper() in categories:
-        return redirect(url_for('subcategory_controller',
-                                body=ans, p_id=p.pid, s_id=p.survey_id))
+    # Redirect down a level if answer is a top node name
+    if ans.upper() in s['question'].keys():
+        return redirect(url_for('subcategory_controller', body=ans, p_id=p.pid, s_id=p.survey_id))
 
-    # If conversation has not expired
-    # TODO: make this based on UTC time
-    if session.get('conv_expires') > datetime.datetime.now():
-        print 'conversation alive'
+    # If conversation is in lowest level of the tree
+    if session.get('last_answer') in s['question'].keys():
 
-        # TODO: make this throw a ValueError if literal provided is not an int
-        if type(int(ans)) == int:
-            child_options = get_child_options(s_body)
+        # If not expired, go to sub-child controller
+        if session.get('conv_expires') > datetime_east():
+            return redirect(url_for('subchild_controller', body=ans, p_id=p.id, s_id=p.survey_id))
 
-        if ans in child_options:
-            print 'one of child options is chosen'
-
-            if session['response_logged'] != 1:
-                print 'response not yet logged, now log'
-
-                received_time = datetime.datetime.utcnow() - datetime.timedelta(hours=4)
-                ping = Ping(p.id, p.survey_id, received_time, ans)
-                db.session.add(ping)
-                db.session.commit()
-
-                response = twiml.Response()
-                response.message('Thanks! We logged your response.')
-                session['response_logged'] = 1
-                return str(response)
-
-            if session['response_logged'] == 1:
-                print 'response already logged'
-
-                response = twiml.Response()
-                response.message('There is no survey open, please wait for next prompt.')
-                return str(response)
-
-    # TODO: make this based on UTC time
-    if session.get('conv_expires') < datetime.datetime.now():
-        response = twiml.Response()
-        response.message('There is no survey open, please wait for next prompt.')
-        return str(response)
+        # If expired, respond that conversation has expired
+        if session.get('conv_expires') < datetime_east():
+            response = twiml.Response()
+            response.message('Conversation has expired, wait until next prompt.')
+            return str(response)
 
 
 @app.route('/sub_category', methods=['GET', 'POST'])
@@ -75,14 +49,58 @@ def subcategory_controller():
     ans = request.args['ans']
     p_id = request.args['p_id']
     s_id = request.args['s_id']
-    s_body = db.session.query(Survey).get(s_id).body
-    first_options = s_body['question'][ans]['options'].keys()
+    s = db.session.query(Survey).get(s_id)
+
+    if ans.upper() in s.body['question'].keys():
+        send = ['More specifically?: ']
+        for option in s.body['question'].keys():
+            stub = ''.join([option, '(', s.body['question'][ans]['options'][option], ') ', ])
+            send.append(stub)
+
+        response = twiml.Response()
+        response.message(''.join(send))
+
+        session['conv_expires'] = (datetime_east() + datetime.datetime.timedelta(minutes=20))
+        session['response_logged'] = 0
+        session['last_answer'] = ans
 
 
+@app.route('/subchild', methods=['GET', 'POST'])
+def subchild_controller():
+    ans = request.args['ans']
+    p_id = request.args['p_id']
+    s_id = request.args['s_id']
+    s = db.session.query(Survey).get(s_id)
 
-def get_child_options(s_body):
-    child_options = []
-    for parent_option in s_body['question'].keys():
-        for child_option in s_body['question'][parent_option]['options'].keys():
-            child_options.append(child_option)
-    return child_options
+    casted_ans = cast_ans(ans)
+    if type(casted_ans) == int:
+        child_options = get_child_options(s.body)
+    else:
+        response = twiml.Response()
+        response.message('Please provide an integer')
+        return str(response)
+
+    if ans in child_options:
+        print 'one of child options is chosen'
+
+        if session['response_logged'] != 1:
+            print 'response not yet logged, now log'
+
+            received_time = datetime_east()
+            ping = Ping(p_id, s_id, received_time, ans)
+            db.session.add(ping)
+            db.session.commit()
+
+            response = twiml.Response()
+            response.message('Thanks! We logged your response.')
+            session['response_logged'] = 1
+            return str(response)
+
+        if session['response_logged'] == 1:
+            print 'response already logged'
+
+            response = twiml.Response()
+            response.message('There is no survey open, please wait for next prompt.')
+            return str(response)
+
+

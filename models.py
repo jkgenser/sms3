@@ -44,10 +44,14 @@ class Ping(db.Model):
     received_num = db.Column(db.String)
     response_value = db.Column(db.String)
 
-    def __init__(self, participant_id, survey_id, received_time, response_value):
+    def __init__(self, participant_id, survey_id, received_time=None, response_value=None,
+                 sent_time=None):
         self.participant_id = participant_id
         self.survey_id = survey_id
         self.received_time = received_time
         self.response_value = response_value
+        self.sent_time = sent_time
 
+    def __repr__(self):
+        return 'p :{}, s: {}, t: {}'.format(self.participant_id, self.survey_id, self.sent_time)
 
