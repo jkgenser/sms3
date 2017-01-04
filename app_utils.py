@@ -3,6 +3,7 @@ import random
 from app import db
 from models import Ping
 
+
 def gen_dates(start_date, duration):
     """
     yields a vector of days based on the duration provided, excludes
@@ -14,6 +15,7 @@ def gen_dates(start_date, duration):
             start_date += datetime.timedelta(1)
         if start_date.weekday() < 5:
             yield start_date
+
 
 def gen_times(date, frequency):
     """
@@ -52,22 +54,14 @@ def gen_ping_object(start, duration, frequency, survey_id, participant_id, morni
     start = start
     for day in gen_dates(start, duration):
 
-        # Use normal gen_times generator if morning=None
-        if morning == '0':
-            for time in gen_times(day, frequency):
-                ping_times.append(time)
+        for time in gen_times(day, frequency):
+            ping_times.append(time)
 
-        # Use morning function if morning=1
-        elif morning == '1':
-            for time in gen_times_morning(day, frequency):
-                ping_times.append(time)
     pings['ping_times'] = ping_times
     pings['survey_id'] = survey_id
     pings['participant_id'] = participant_id
     return pings
 
-
-# ping_obj = gen_ping_object(datetime.date(2016,10,5), 16, 1, 1)
 
 def ping_loader(ping_obj):
     for ping_time in ping_obj['ping_times']:
@@ -90,6 +84,13 @@ def get_child_options(s_body):
         for child_option in s_body['question'][parent_option]['options'].keys():
             child_options.append(child_option)
     return child_options
+
+
+def get_parent_options(s):
+    parent_options = []
+    for parent in s['question'].keys():
+        parent_options.append(parent)
+    return parent_options
 
 
 def cast_ans(ans):

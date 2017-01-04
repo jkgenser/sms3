@@ -4,7 +4,7 @@ from flask import Flask, request, url_for, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from twilio.rest import TwilioRestClient as Client
 from twilio import twiml
-from app_utils import datetime_east, cast_ans, get_child_options
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -12,6 +12,7 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 db = SQLAlchemy(app)
 
 from models import Participant, Survey, Ping
+from app_utils import datetime_east, cast_ans, get_child_options
 
 twilio_account_sid = app.config['TWILIO_ACCOUNT_SID']
 twilio_auth_token = app.config['TWILIO_AUTH_TOKEN']
@@ -28,14 +29,14 @@ def controller():
 
     # Redirect down a level if answer is a top node name
     if ans.upper() in s['question'].keys():
-        return redirect(url_for('subcategory_controller', body=ans, p_id=p.pid, s_id=p.survey_id))
+        return redirect(url_for('subcategory_controller', ans=ans, p_id=p.id, s_id=p.survey_id))
 
     # If conversation is in lowest level of the tree
     if session.get('last_answer') in s['question'].keys():
 
         # If not expired, go to sub-child controller
         if session.get('conv_expires') > datetime_east():
-            return redirect(url_for('subchild_controller', body=ans, p_id=p.id, s_id=p.survey_id))
+            return redirect(url_for('subchild', ans=ans, p_id=p.id, s_id=p.survey_id))
 
         # If expired, respond that conversation has expired
         if session.get('conv_expires') < datetime_east():
@@ -53,20 +54,22 @@ def subcategory_controller():
 
     if ans.upper() in s.body['question'].keys():
         send = ['More specifically?: ']
-        for option in s.body['question'].keys():
-            stub = ''.join([option, '(', s.body['question'][ans]['options'][option], ') ', ])
+        for option in s.body['question'][ans]['options'].keys():
+            stub = ''.join([option, ' (', s.body['question'][ans]['options'][option], ') ', ])
             send.append(stub)
 
         response = twiml.Response()
         response.message(''.join(send))
 
-        session['conv_expires'] = (datetime_east() + datetime.datetime.timedelta(minutes=20))
+        session['conv_expires'] = (datetime_east() + datetime.timedelta(minutes=20))
         session['response_logged'] = 0
         session['last_answer'] = ans
 
+        return str(response)
+
 
 @app.route('/subchild', methods=['GET', 'POST'])
-def subchild_controller():
+def subchild():
     ans = request.args['ans']
     p_id = request.args['p_id']
     s_id = request.args['s_id']

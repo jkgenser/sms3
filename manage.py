@@ -1,10 +1,10 @@
+from app import app, db
 import datetime
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from app import app, db
-from models import Survey, Participant, Ping
-from app_utils import datetime_east
 from twilio.rest import TwilioRestClient as Client
+from models import Survey, Participant, Ping
+from app_utils import datetime_east, get_parent_options
 
 
 manager = Manager(app)
@@ -35,7 +35,7 @@ def add_survey(survey_type=None, body=None):
 
 
 @manager.command
-def commit_pings(year, month, day, duration, frequency, s_id, p_id):
+def add_pings(year, month, day, duration, frequency, s_id, p_id):
     from app_utils import gen_ping_object, ping_loader
     start_date = datetime.datetime(int(year), int(month), int(day))
 
@@ -60,14 +60,24 @@ def retrieve_scheduled_pings():
 
 def send_prompt(ping):
     to = db.session.query(Participant).get(ping.participant_id).phone_number
-    sbody = db.session.query(Survey).get(ping.survey_id).body
+    s = db.session.query(Survey).get(ping.survey_id).body
+
+    parent_options = get_parent_options(s)
+
 
     client.messages.create(
         to=to,
         from_=twilio_number,
-        body=sbody)
+        body=s)
     return
 
+
+@manager.command
+def add_ping_test(s_id, p_id):
+    p = Ping(p_id, s_id, sent_time=datetime_east())
+    db.session.add(p)
+    db.session.commit()
+    print 'ping {} added'.format(p)
 
 if __name__ == '__main__':
     manager.run()
