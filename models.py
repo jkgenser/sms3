@@ -53,5 +53,5 @@ class Ping(db.Model):
         self.sent_time = sent_time
 
     def __repr__(self):
-        return 'p :{}, s: {}, t: {}'.format(self.participant_id, self.survey_id, self.sent_time)
+        return 'p:{}, s:{}, t:{}'.format(self.participant_id, self.survey_id, self.sent_time)
 

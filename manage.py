@@ -62,13 +62,25 @@ def send_prompt(ping):
     to = db.session.query(Participant).get(ping.participant_id).phone_number
     s = db.session.query(Survey).get(ping.survey_id).body
 
+    if s['type'] == 'binary':
+        msg = s['sent']['1']
+        client.messages.create(to=to, from_ = twilio_number, body=msg)
+        return
+
     parent_options = get_parent_options(s)
 
+    prompt = ['What are you working on now?: ']
+    for option in parent_options:
+        text = s['question'][option]['text']
+        stub = ''.join(['(', option, '=', text, ') '])
+        prompt.append(stub)
+
+    prompt = ''.join(prompt)
 
     client.messages.create(
         to=to,
         from_=twilio_number,
-        body=s)
+        body=prompt)
     return
 
 

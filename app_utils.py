@@ -90,7 +90,7 @@ def get_parent_options(s):
     parent_options = []
     for parent in s['question'].keys():
         parent_options.append(parent)
-    return parent_options
+    return sorted(parent_options)
 
 
 def cast_ans(ans):

@@ -1,4 +1,5 @@
 test_survey = {
+    "type": "tree",
     "title": "Survey for Care Partners",
     "question": {
         "A": {
@@ -33,6 +34,7 @@ test_survey = {
 }
 
 test_survey_office = {
+    "type": "tree",
     "title": "Survey for ClinOps Office",
     "question": {
         "A": {
@@ -64,6 +66,14 @@ test_survey_office = {
     }
 }
 
+survey_admin ={
+    "type": 'binary',
+    "sent": {
+        1: "Have you been doing ADMINISTRATIVE work in the last hour or so? (Y/N)"
+    }
+}
+
 surveys = dict()
 surveys['test_survey'] = test_survey
 surveys['test_survey_office'] = test_survey_office
+surveys['admin'] = survey_admin
