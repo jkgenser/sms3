@@ -73,7 +73,43 @@ survey_admin ={
     }
 }
 
+beta_test = {
+    "type": "tree",
+    "title": "beta_test",
+    "prompt": "Which test question would you like to answer? ",
+    "question": {
+        "A": {
+            "text": "Favorite color",
+            "options":
+                {
+                    "1": "Red",
+                    "2": "Blue",
+                    "3": "Other"
+                }
+        },
+        "B": {
+            "text": "Favorite movie genre",
+            "options":
+                {
+                    "4": "Horror",
+                    "5": "Action",
+                    "6": "Other"
+                }
+        },
+        "C": {
+            "text": "Favorite city",
+            "options":
+                {
+                    "7": "Boston",
+                    "8": "New York",
+                    "9": "Other",
+                }
+        }
+    }
+}
+
 surveys = dict()
 surveys['test_survey'] = test_survey
 surveys['test_survey_office'] = test_survey_office
 surveys['admin'] = survey_admin
+surveys['beta_test'] = beta_test

@@ -69,7 +69,8 @@ def send_prompt(ping):
 
     parent_options = get_parent_options(s)
 
-    prompt = ['What are you working on now?: ']
+    # Build and send the prompt based on survey json structure
+    prompt = [s['prompt']]
     for option in parent_options:
         text = s['question'][option]['text']
         stub = ''.join(['(', option, '=', text, ') '])
