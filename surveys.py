@@ -108,8 +108,49 @@ beta_test = {
     }
 }
 
+
+ccc_clin = {
+    "type": "tree",
+    "title": "ccc_clin",
+    "prompt": "Which type of work have you been doing? ",
+    "question": {
+        "A": {
+            "text": "Administrative",
+            "options":
+                {
+                    "1": "Research and medical record retrieval",
+                    "2": "Auth and order placement",
+                    "3": "Prescription or DME procurement",
+                    "4": "Other"
+                }
+        },
+        "B": {
+            "text": "Clinical",
+            "options":
+                {
+                    "5": "Assessments",
+                    "6": "Care Plan Development",
+                    "7": "Scheduled member check-ins",
+                    "8": "Unscheduled member issues or emergencies",
+                    "9": "Documenting member encounters",
+                    "10": "Other"
+                }
+        },
+        "C": {
+            "text": "Travel",
+            "options":
+                {
+                    "11": "To office",
+                    "12": "To home",
+                    "13": "To member",
+                }
+        }
+    }
+}
+
 surveys = dict()
 surveys['test_survey'] = test_survey
 surveys['test_survey_office'] = test_survey_office
 surveys['admin'] = survey_admin
 surveys['beta_test'] = beta_test
+surveys['ccc_clin'] = ccc_clin
