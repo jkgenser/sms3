@@ -148,9 +148,62 @@ ccc_clin = {
     }
 }
 
+cg_care = {
+    "type": "tree",
+    "title": "cg_care",
+    "prompt": "Which type of work have you been doing? ",
+    "question": {
+        "A": {
+            "text": "Care_Delivery",
+            "options":
+                {
+                    "1": "MDS assessment",
+                    "2": "Scheduled visit",
+                    "3": "Urgent visit",
+                    "4": "Post hospital visit",
+                    "5": "Reviewing documentation",
+                    "6": "Writing documentation",
+                    "7": "Picking up meds or dropping off labs"
+                }
+        },
+        "B": {
+            "text": "Care_Management",
+            "options":
+                {
+                    "8": "Record requests",
+                    "9": "Authorizations",
+                    "10": "Calls to problem solve with family or care team",
+                    "11": "Procurement of DME or services",
+                    "12": "Care Coordination in person",
+                }
+        },
+        "C": {
+            "text": "Travel",
+            "options":
+                {
+                    "13": "To office",
+                    "14": "To home",
+                    "15": "To member",
+                }
+        },
+        "D": {
+            "text": "Meetings",
+            "options":
+                {
+                    "16": "Corporate or staff",
+                    "17": "Educational",
+                    "18": "Supervision",
+                }
+
+        }
+    }
+}
+
+
 surveys = dict()
 surveys['test_survey'] = test_survey
 surveys['test_survey_office'] = test_survey_office
 surveys['admin'] = survey_admin
 surveys['beta_test'] = beta_test
 surveys['ccc_clin'] = ccc_clin
+surveys['cg_care'] = cg_care
