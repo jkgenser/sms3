@@ -22,7 +22,7 @@ def add_participant(name=None, phone_number=None, role=None, survey_id=None):
     p = Participant(name, phone_number=phone_number, role=role, survey_id=survey_id)
     db.session.add(p)
     db.session.commit()
-    print 'participant added!'
+    print('participant added!')
 
 
 @manager.command
@@ -31,7 +31,7 @@ def add_survey(survey_type=None, body=None):
     s = Survey(survey_type, surveys.surveys[body])
     db.session.add(s)
     db.session.commit()
-    print 'survey added!'
+    print('survey added!')
 
 
 @manager.command
@@ -90,7 +90,7 @@ def add_ping_test(s_id, p_id):
     p = Ping(p_id, s_id, sent_time=datetime_east())
     db.session.add(p)
     db.session.commit()
-    print 'ping {} added'.format(p)
+    print ('ping {} added'.format(p))
 
 if __name__ == '__main__':
     manager.run()
