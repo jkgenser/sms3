@@ -32,12 +32,28 @@ def gen_times(date, frequency):
         yield ping_time
 
 
+def build_ping_vector(date, frequency):
+    ping_choices = []
+    ping_set = []
+
+    for i in range(9):
+        ping_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=15)
+        ping_time += datetime.timedelta(hours=i)
+        ping_choices.append(ping_time)
+
+    for i in range(frequency):
+        new_ping = random.choice(ping_choices)
+        ping_set.append(new_ping)
+
+    return ping_set
+
+
 def gen_times_morning(date, frequency):
     """
     yields times
     """
     for i in range(frequency):
-        ping_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=30)
+        ping_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=15)
         yield ping_time
 
 
@@ -54,8 +70,10 @@ def gen_ping_object(start, duration, frequency, survey_id, participant_id, morni
     start = start
     for day in gen_dates(start, duration):
 
-        for time in gen_times(day, frequency):
-            ping_times.append(time)
+        # for time in gen_times(day, frequency):
+        #     ping_times.append(time)
+        ping_set = build_ping_vector(day, frequency)
+        ping_times.extend(ping_set)
 
     pings['ping_times'] = ping_times
     pings['survey_id'] = survey_id
