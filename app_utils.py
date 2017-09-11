@@ -36,7 +36,7 @@ def build_ping_vector(date, frequency):
     ping_choices = []
     ping_set = []
 
-    for i in range(9):
+    for i in range(8):
         ping_time = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=9, minute=15)
         ping_time += datetime.timedelta(hours=i)
         ping_choices.append(ping_time)
@@ -44,6 +44,7 @@ def build_ping_vector(date, frequency):
     for i in range(frequency):
         new_ping = random.choice(ping_choices)
         ping_set.append(new_ping)
+        ping_choices.remove(new_ping)
 
     return ping_set
 
