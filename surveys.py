@@ -239,6 +239,43 @@ cg_central = {
     }
 }
 
+cg_west = {
+    "type": "tree",
+    "title": "cg_central",
+    "prompt": "Which type of work have you been doing? ",
+    "question": {
+        "A": {
+            "text": "Administrative",
+            "options":
+                {
+                    "1": "Research",
+                    "2": "Prescription or DME procurement",
+                    "3": "Member documentation",
+                    "4": "Authorizations",
+                    "5": "LOA Process",
+                    "6": "Other",
+                }
+        },
+        "B": {
+            "text": "Member care coordination",
+            "options":
+                {
+                    "7": "Education",
+                    "8": "Assessments or examinations",
+                    "9": "Care plan development",
+                    "10": "Care coordination",
+                    "11": "Member engagement",
+                    "12": "Other"
+                }
+        },
+        "C": {
+            "options":
+                {
+                    "13": "Confirm travel",
+                }
+        }
+    }
+}
 
 surveys = dict()
 surveys['test_survey'] = test_survey
@@ -248,3 +285,4 @@ surveys['beta_test'] = beta_test
 surveys['ccc_clin'] = ccc_clin
 surveys['cg_care'] = cg_care
 surveys['cg_central'] = cg_central
+surveys['cg_west'] = cg_west
