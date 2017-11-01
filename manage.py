@@ -82,6 +82,9 @@ def send_prompt(ping):
         to=to,
         from_=twilio_number,
         body=prompt)
+
+    print ('prompt sent to: {}'.format(to))
+
     return
 
 
