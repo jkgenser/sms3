@@ -269,6 +269,7 @@ cg_west = {
                 }
         },
         "C": {
+            "text": "Travel",
             "options":
                 {
                     "13": "Confirm travel",
