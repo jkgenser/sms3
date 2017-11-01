@@ -98,7 +98,7 @@ def subchild():
         return str(response)
 
     if ans in child_options:
-        print 'one of child options is chosen'
+        print 'one of child options is chosen by {}'.format(p_id)
 
         if session['response_logged'] != 1:
             print 'response not yet logged, now log'
