@@ -84,7 +84,7 @@ def subcategory_controller():
 
 @app.route('/subchild', methods=['GET', 'POST'])
 def subchild():
-    ans = request.args['ans']
+    ans = request.args['ans'].upper()
     p_id = request.args['p_id']
     s_id = request.args['s_id']
     s = db.session.query(Survey).get(s_id)
