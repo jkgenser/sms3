@@ -60,12 +60,12 @@ def controller():
 
 @app.route('/sub_category', methods=['GET', 'POST'])
 def subcategory_controller():
-    ans = request.args['ans']
+    ans = request.args['ans'].upper()
     p_id = request.args['p_id']
     s_id = request.args['s_id']
     s = db.session.query(Survey).get(s_id)
 
-    if ans.upper() in s.body['question'].keys():
+    if ans in s.body['question'].keys():
         send = ['More specifically?: ']
         for option in s.body['question'][ans]['options'].keys():
             text = s.body['question'][ans]['options'][option]
