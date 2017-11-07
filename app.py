@@ -94,7 +94,7 @@ def subchild():
         child_options = get_child_options(s.body)
     else:
         response = twiml.Response()
-        response.message('Please provide an integer')
+        response.message('Please reply with ONLY a single number')
         return str(response)
 
     if ans in child_options:
