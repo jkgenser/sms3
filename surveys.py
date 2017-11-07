@@ -328,4 +328,4 @@ surveys['ccc_clin'] = ccc_clin
 surveys['cg_care'] = cg_care
 surveys['cg_central'] = cg_central
 surveys['cg_west'] = cg_west
-surveys['cg_weset2'] = cg_west2
+surveys['cg_west2'] = cg_west2
