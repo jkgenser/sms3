@@ -279,7 +279,7 @@ cg_west = {
 }
 
 
-cg_west2 = {
+cg_west3 = {
     "type": "tree",
     "title": "cg_central",
     "prompt": "Which type of work have you been doing? ",
@@ -299,7 +299,7 @@ cg_west2 = {
             "text": "Member care coordination",
             "options":
                 {
-                    "6": "Other",
+                    "6": "Mbr education",
                     "7": "Direct care (TEL)",
                     "8": "Direct care (F2F)",
                     "9": "Care plan",
@@ -328,4 +328,4 @@ surveys['ccc_clin'] = ccc_clin
 surveys['cg_care'] = cg_care
 surveys['cg_central'] = cg_central
 surveys['cg_west'] = cg_west
-surveys['cg_west2'] = cg_west2
+surveys['cg_west3'] = cg_west3
